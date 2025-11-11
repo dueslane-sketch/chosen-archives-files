@@ -4,6 +4,7 @@ import React from "react";
 import AuthForm from "@/components/AuthForm";
 import { useSupabase } from "@/components/SupabaseProvider";
 import { Navigate } from "react-router-dom";
+import EnvDisplay from "@/components/EnvDisplay"; // Import EnvDisplay
 
 const AuthPage = () => {
   const { session, isLoading } = useSupabase();
@@ -21,8 +22,9 @@ const AuthPage = () => {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900 p-4">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 dark:bg-gray-900 p-4">
       <AuthForm />
+      <EnvDisplay /> {/* Add EnvDisplay here */}
     </div>
   );
 };
