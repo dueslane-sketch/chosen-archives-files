@@ -52,7 +52,8 @@ export const SupabaseProvider: React.FC<{ children: React.ReactNode }> = ({
     );
 
     return () => {
-      authListener?.unsubscribe();
+      // Correctly call unsubscribe on the subscription object
+      authListener?.subscription?.unsubscribe();
     };
   }, [navigate]);
 
