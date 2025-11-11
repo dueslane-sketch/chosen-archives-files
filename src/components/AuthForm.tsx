@@ -43,7 +43,8 @@ const AuthForm = () => {
         toast.success("Signed up successfully! Please check your email to confirm your account.");
       }
     } catch (error: any) {
-      toast.error(error.message);
+      console.error("Supabase Auth Error:", error); // Log the full error object
+      toast.error(error.message || "An unexpected error occurred during authentication.");
     } finally {
       setLoading(false);
     }
