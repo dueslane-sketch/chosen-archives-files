@@ -7,28 +7,8 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { MessageSquare, Phone, Video, PhoneOff } from "lucide-react";
-import { createClient } from "@supabase/supabase-js";
+import { supabase } from "@/lib/supabase"; // Import the centralized supabase client
 import { toast } from "sonner";
-
-// Initialize Supabase client (replace with your actual Supabase URL and ANON KEY)
-// For a real app, these should be environment variables.
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
-
-// Check if Supabase environment variables are set
-if (!supabaseUrl || supabaseUrl === "YOUR_SUPABASE_URL") {
-  console.error("Supabase URL is not set. Please add VITE_SUPABASE_URL to your .env.local file.");
-  toast.error("Supabase URL is missing. Please configure your .env.local file.");
-}
-if (!supabaseAnonKey || supabaseAnonKey === "YOUR_SUPABASE_ANON_KEY") {
-  console.error("Supabase Anon Key is not set. Please add VITE_SUPABASE_ANON_KEY to your .env.local file.");
-  toast.error("Supabase Anon Key is missing. Please configure your .env.local file.");
-}
-
-const supabase =
-  supabaseUrl && supabaseAnonKey && supabaseUrl !== "YOUR_SUPABASE_URL" && supabaseAnonKey !== "YOUR_SUPABASE_ANON_KEY"
-    ? createClient(supabaseUrl, supabaseAnonKey)
-    : null;
 
 interface Message {
   id: string;
