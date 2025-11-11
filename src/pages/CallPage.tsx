@@ -12,11 +12,23 @@ import { toast } from "sonner";
 
 // Initialize Supabase client (replace with your actual Supabase URL and ANON KEY)
 // For a real app, these should be environment variables.
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || "YOUR_SUPABASE_URL";
-const supabaseAnonKey =
-  import.meta.env.VITE_SUPABASE_ANON_KEY || "YOUR_SUPABASE_ANON_KEY";
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-const supabase = createClient(supabaseUrl, supabaseAnonKey);
+// Check if Supabase environment variables are set
+if (!supabaseUrl || supabaseUrl === "YOUR_SUPABASE_URL") {
+  console.error("Supabase URL is not set. Please add VITE_SUPABASE_URL to your .env.local file.");
+  toast.error("Supabase URL is missing. Please configure your .env.local file.");
+}
+if (!supabaseAnonKey || supabaseAnonKey === "YOUR_SUPABASE_ANON_KEY") {
+  console.error("Supabase Anon Key is not set. Please add VITE_SUPABASE_ANON_KEY to your .env.local file.");
+  toast.error("Supabase Anon Key is missing. Please configure your .env.local file.");
+}
+
+const supabase =
+  supabaseUrl && supabaseAnonKey && supabaseUrl !== "YOUR_SUPABASE_URL" && supabaseAnonKey !== "YOUR_SUPABASE_ANON_KEY"
+    ? createClient(supabaseUrl, supabaseAnonKey)
+    : null;
 
 interface Message {
   id: string;
@@ -66,7 +78,12 @@ const CallPage = () => {
 
   // Supabase Realtime for Chat
   useEffect(() => {
-    if (!peerId || !currentCall) return;
+    if (!peerId || !currentCall || !supabase) {
+      if (!supabase) {
+        toast.error("Supabase client not initialized. Check your .env.local file.");
+      }
+      return;
+    }
 
     const channel = supabase.channel(`chat_${peerId}_${currentCall.peer}`);
 
@@ -103,7 +120,12 @@ const CallPage = () => {
 
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newMessage.trim() || !peerId || !currentCall) return;
+    if (!newMessage.trim() || !peerId || !currentCall || !supabase) {
+      if (!supabase) {
+        toast.error("Supabase client not initialized. Cannot send message.");
+      }
+      return;
+    }
 
     const { error } = await supabase.from("messages").insert({
       sender_id: peerId,
