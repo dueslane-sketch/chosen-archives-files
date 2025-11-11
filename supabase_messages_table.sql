@@ -1,7 +1,7 @@
 CREATE TABLE messages (
   id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
-  sender_id uuid REFERENCES auth.users (id) ON DELETE CASCADE NOT NULL,
-  receiver_id uuid REFERENCES auth.users (id) ON DELETE CASCADE NOT NULL,
+  sender_id uuid REFERENCES profiles(id) ON DELETE CASCADE NOT NULL,
+  receiver_id uuid REFERENCES profiles(id) ON DELETE CASCADE NOT NULL,
   content text NOT NULL,
   created_at timestamp with time zone DEFAULT now() NOT NULL
 );
@@ -12,6 +12,11 @@ CREATE POLICY "Users can view their own messages."
   ON messages FOR SELECT
   USING (auth.uid() = sender_id OR auth.uid() = receiver_id);
 
-CREATE POLICY "Users can insert their own messages."
+CREATE POLICY "Users can send messages."
   ON messages FOR INSERT
   WITH CHECK (auth.uid() = sender_id);
+
+-- Optional: Users can delete their own messages (if desired)
+-- CREATE POLICY "Users can delete their own messages."
+--   ON messages FOR DELETE
+--   USING (auth.uid() = sender_id);
